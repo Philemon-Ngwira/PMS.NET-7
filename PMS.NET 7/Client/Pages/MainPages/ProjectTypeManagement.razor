@@ -1,0 +1,141 @@
+﻿@page "/ProjectTypeManagement"
+@using PMS.NET_7.Client.Interfaces;
+@using PMS.NET_7.Shared.Models;
+
+<MudCard Class="mb-3">
+    <MudText Align="Align.Center" Typo="Typo.h2">Project Type Management</MudText>
+</MudCard>
+
+<MudTable Items="@ProjectTypesTables" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<ProjectTypesTable,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Periodic ProjectTypesTables</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Nr</MudTh>
+        <MudTh>Sign</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Position</MudTh>
+        <MudTh>Molar mass</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.ID</MudTd>
+        <MudTd DataLabel="Sign">@context.ProjectTypeName</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<div class="d-flex flex-wrap mt-4">
+    <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+    <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+    <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+    <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+    <MudSpacer />
+    <div style="min-width:200px;">
+        <MudText Inline="true" Class="align-self-center">Selected1: @selectedItem1?.ProjectTypeName</MudText>
+    </div>
+</div>
+
+
+<MudCard>
+    <MudGrid>
+
+        <MudItem xs="12" md="6">
+            <MudTextField Variant="Variant.Filled" AdornmentIcon="@Icons.Material.Filled.TextFields" Label="New project Type Name" T="string" @bind-Value="newProjectType.ProjectTypeName"></MudTextField>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <InputFile id="fileInput" OnChange="UploadFiles" hidden multiple />
+
+            <MudFab HtmlTag="label"
+                    Color="Color.Primary"
+                    Icon="@Icons.Filled.Image"
+                    Label="Load picture"
+                    for="fileInput" />
+          @*  @if (files != null)
+            {
+                <MudText Typo="@Typo.h6">
+                    @files.Count() File@(
+                files.Count() == 1 ? "" : "s"
+                ):
+                </MudText>
+                <MudList>
+                    @foreach (var file in files)
+                    {
+                        <MudListItem Icon="@Icons.Filled.AttachFile" @key="@file">
+                            @file.Name <code>@file.Size bytes</code>
+                        </MudListItem>
+                    }
+                </MudList>
+            }*@
+        </MudItem>
+        <MudItem xs="12">
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Save" Color="Color.Info" FullWidth="true" OnClick="SaveNewProjectType">Save Project type</MudButton>
+        </MudItem>
+
+
+    </MudGrid>
+</MudCard>
+@code {
+    [Inject] IGenericRepositoryService _genericRepositoryService { get; set; }
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private string searchString1 = "";
+    private ProjectTypesTable selectedItem1 = null;
+    private HashSet<ProjectTypesTable> selectedItems = new HashSet<ProjectTypesTable>();
+    protected ProjectTypesTable newProjectType = new();
+    private IEnumerable<ProjectTypesTable> ProjectTypesTables = new List<ProjectTypesTable>();
+    IList<IBrowserFile> files = new List<IBrowserFile>();
+    [Inject]ISnackbar Snackbar { get; set; }
+    [Inject]NavigationManager NavigationManager { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        ProjectTypesTables = await _genericRepositoryService.GetAllAsync<ProjectTypesTable>("api/PMS/GetProjectTypeTable");
+
+    }
+
+    private bool FilterFunc1(ProjectTypesTable ProjectTypesTable) => FilterFunc(ProjectTypesTable, searchString1);
+
+    private bool FilterFunc(ProjectTypesTable ProjectTypesTable, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (ProjectTypesTable.ProjectTypeName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+    private async void UploadFiles(InputFileChangeEventArgs e)
+    {
+        var format = "image/png";
+        foreach (var file in e.GetMultipleFiles(10))
+        {
+            var resizeImage = await file.RequestImageFileAsync(format, 200, 200);
+            var buffer = new byte[resizeImage.Size];
+            await resizeImage.OpenReadStream().ReadAsync(buffer);
+            var Imagedata = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+            newProjectType.ProjectTypeImage = Imagedata;
+        }
+
+    }
+
+    protected async void SaveNewProjectType()
+    {
+        try
+        {
+            await _genericRepositoryService.SaveAllAsync("api/PMS/SaveProjectType", newProjectType);
+            Snackbar.Add("Successfully Added!", Severity.Success);
+            NavigationManager.NavigateTo("/ProjectTypeManagement", true);
+        }
+        catch (Exception ex)
+        {
+            var _ = ex.Message;
+            throw;
+        }
+        
+    }
+}

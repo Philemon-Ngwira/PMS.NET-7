@@ -1,0 +1,97 @@
+﻿{
+   "CodeGenerationMode": 3,
+   "ContextClassName": "PMSDBContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "PMS.NET_7.Shared",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 2,
+   "Tables": [
+      {
+         "Name": "[dbo].[ApplicationTypesTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AspNetRoleClaims]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AspNetRoles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AspNetUserClaims]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AspNetUserLogins]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AspNetUserRoles]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AspNetUsers]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AspNetUserTokens]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[DeviceCodes]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[GameTypesTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Keys]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PersistedGrants]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ProjectProgress]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ProjectsTable]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[ProjectTypesTable]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "PHOENIX\\SQLEXPRESS.PMSDB",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": true,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false,
+   "UseT4": false
+}
